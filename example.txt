@@ -1,0 +1,4 @@
+[
+    "Bakliyat, Pirinç, Makarna, Türkiye Tarım Kredi Koop.Yeşil Mercimek 1 kg",
+    "Bakliyat, Pirinç, Makarna, Reis Gönen Baldo Pirinç 1 kg"
+]
