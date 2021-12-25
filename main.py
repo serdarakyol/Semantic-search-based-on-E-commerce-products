@@ -1,4 +1,4 @@
-from recommendation_api import utils
+from recommendation_api.utils import utils
 from fastapi import FastAPI
 
 model = utils.load_model(
