@@ -1,6 +1,6 @@
 from os.path import dirname, abspath
 
-from recommendation_api.models.recommend import RecommendationRequest, RecommendationResponse
+from recommendation_api.models.model_recommend import RecommendationRequest, RecommendationResponse
 from recommendation_api.utils.utils import clean_text, load_data, load_model, get_cart_avg, recommanded
 
 ROOT_DIR = dirname(dirname(abspath(__file__)))
@@ -22,5 +22,4 @@ class Recommend:
         # find similar items
         results = recommanded(PRODUCTS, avg_cart, cart_products)
 
-        print(results)
         return results

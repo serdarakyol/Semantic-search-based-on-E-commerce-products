@@ -7,4 +7,5 @@ class RecommendationRequest(BaseModel):
     product_names: List
 
 class RecommendationResponse(BaseModel):
-    results: Json
+    cart: List
+    similar_items: List

@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from starlette.requests import Request
 
 from recommendation_api.core import security
-from recommendation_api.models.recommend import RecommendationResponse, RecommendationRequest
-from recommendation_api.services.recommend import Recommend
+from recommendation_api.models.model_recommend import RecommendationResponse, RecommendationRequest
+from recommendation_api.services.service_recommend import Recommend
 
 router = APIRouter()
 
