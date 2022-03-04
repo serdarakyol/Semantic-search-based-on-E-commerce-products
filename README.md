@@ -7,8 +7,8 @@ Word2Vec(w2v) model chose because I can define the size of output of model with 
 # Usage
 ## For Environment
 For use the the API, just follow the below codes
-#### $ git clone https://github.com/serdarakyol/product-similarity-system.git
-#### $ cd product-similarity-system
+#### $ git clone https://github.com/serdarakyol/Semantic-search-based-on-E-commerce-products.git
+#### $ cd Semantic-search-based-on-E-commerce-products.git
 #### $ virtualenv env
 #### $ source env/bin/activate
 #### $ pip install -r requirements.txt
