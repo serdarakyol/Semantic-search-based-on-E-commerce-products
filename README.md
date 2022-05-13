@@ -26,9 +26,14 @@ Header | Values
 Content-Type | application/json
 token | serdarakyol55@outlook.com
 ## OR
-just go to http://0.0.0.0:1234/docs. Click "Authorize" button and write "serdarakyol55@outlook.com". After click other "Authorize" button as shown below
+just go to http://0.0.0.0:1234/docs. Click "Authorize" button as shown below.
 
-![Authorize](authorize.png)
+![Authorize](authorize_step1.png)
+
+
+Then write "serdarakyol55@outlook.com". After click other "Authorize" button as shown below
+
+![Authorize2](authorize_step2.png)
 
 
 Then write which product you have on your cart. 

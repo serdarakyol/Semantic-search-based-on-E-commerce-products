@@ -1,8 +1,9 @@
-import numpy as np
 import string
 import pickle
 from gensim.models import Word2Vec
-from sklearn.metrics.pairwise import cosine_similarity
+from numba import jit, prange
+from numpy import dot, ndarray, zeros, float64, argmax
+from numpy.linalg import norm
 
 
 def clean_text(text):
@@ -54,11 +55,15 @@ def load_model(path):
 
 def get_cart_avg(model, data):
     """
+    Calculate average of cart
+
     model: Word2Vec model
     data: cleaned cart items
+
+    Return: Returns vector with size 300
     """
     
-    cart_vectors = np.zeros((300,))
+    cart_vectors = zeros((300,))
     c = 0
     for sent in data:
         sent = sent.split(' ')
@@ -69,6 +74,58 @@ def get_cart_avg(model, data):
     return cart_vectors / c
 
 
+@jit(nopython=True, fastmath=True)
+def calculate_cos_similarity(first_item:ndarray, second_item:ndarray):
+    """
+    Calculates cosine similarity between 2 vectors
+    
+    first_item: First item to calculate similarty
+    second_item: Second item to calculate similarty
+    
+    Return: Similarity score
+    """
+    dt = dot(first_item, second_item)
+    if abs(dt) < 1e-10:
+        return 0
+    else:
+        return dt/norm(first_item)/norm(second_item)
+
+
+@jit(nopython=True, parallel=True)
+def get_scores_parallel(multiple_item:ndarray, single_item:ndarray):
+    """
+    Calculate similarity between 1 to many item
+
+    multiple_item: Banch of item to calculate similarity
+    single_item: Single item to calculate similarity
+
+    Return: Similarity scores
+    """
+    n = multiple_item.shape[0]
+    #n:int = 10235
+    scores = zeros(shape=(n), dtype=float64)
+    for i in prange(n):
+        scores[i] = calculate_cos_similarity(first_item=single_item, second_item=multiple_item[i])
+
+    return scores
+
+
+def calculate(multiple_item:ndarray, single_item:ndarray):
+    """
+    Calculates cosine similarity between a item and whole dataset
+    
+    multiple_item: All dataset to calculate with single_item
+    single_item: Single item to calculate for whole dataset
+    
+    Return: Similarity between single_item and multiple_item[i]
+    """
+    # create 10235x300 shape of array
+    mult = zeros(shape=(multiple_item.shape[0], multiple_item[0].shape[0]), dtype=float64)
+    for i in range(mult.shape[0]):
+        mult[i] = multiple_item[i]
+    
+    return get_scores_parallel(multiple_item=mult, single_item=single_item)
+
 def recommanded(products, avg_cart, cart):
     """
     Get 10 most similar products
@@ -76,32 +133,31 @@ def recommanded(products, avg_cart, cart):
     products: all_products
     avg_cart: average or cart vectors
     cart: current products on cart
+
+    Return: 10 recommanded products with similarities
     """
-    similar = []
+    results = []
     recommanded = {
         "cart" : cart,
         "similar_items" : []
     }
-
-    # calculate cart average with all products
-    for i in range(len(products)):
-        similarity = cosine_similarity(avg_cart.reshape(
-            1, -1), products.avg[i].reshape(1, -1))
-        if similarity > 0.8:
-            item = {
-                'productName': products.features[i],
-                'similarity': similarity[0][0]
-            }
-            similar.append(item)
-
-        if len(similar) == 10:
-            break
-
-    sorted_data = sorted(similar, key=lambda i: i['similarity'], reverse=True)
+    # calculate average cart with other products
+    scores = calculate(multiple_item=products.avg.to_numpy(), single_item=avg_cart)
     
-    # dont recommend if similar item same on the cart
-    for item in sorted_data:
+    # get top 10 similar products:
+    for i in range(10):
+        index = argmax(scores)
+        temp = {
+            "productName":products.features[index],
+            "similarity": scores[index]
+        }
+        results.append(temp)
+        scores[index] = 0
+
+    # sort
+    results = sorted(results, key=lambda x: x["similarity"], reverse=True)
+    for item in results:
         if item['productName'] not in cart:
             recommanded['similar_items'].append(item)
-    
+
     return recommanded

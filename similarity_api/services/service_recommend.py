@@ -1,12 +1,5 @@
-#from os.path import dirname, abspath
-
 from similarity_api.models.model_recommend import SimilarityRequest, SimilarityResponse
-from similarity_api.utils.utils import clean_text, load_data, load_model, get_cart_avg, recommanded
-
-#ROOT_DIR = dirname(dirname(abspath(__file__)))
-#MODEL = load_model(ROOT_DIR + "/models/den_hepsi_burada_word2vec.model")
-#PRODUCTS = load_data(ROOT_DIR + "/data/final_products.pkl")
-
+from similarity_api.utils.utils import clean_text, get_cart_avg, recommanded
 
 class Recommend:
     def __init__(self, model, product) -> None:
