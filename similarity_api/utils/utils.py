@@ -31,7 +31,6 @@ def load_data(path):
     """
     load products
     """
-
     try:
         with open(path, 'rb') as handle:
             data = pickle.load(handle)
@@ -42,6 +41,9 @@ def load_data(path):
 
 
 def load_model(path):
+    """
+    Load word2vec model
+    """
     try:
         model = Word2Vec.load(path)
         print("Model Loaded...")

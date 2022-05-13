@@ -14,7 +14,10 @@ def post_recommend(
     request_data: SimilarityRequest = None,
 ) -> SimilarityResponse:
 
-    recommend_service = Recommend()
+    recommend_service = Recommend(
+        model=request.app.state.model,
+        product=request.app.state.product
+    )
     response_data = recommend_service.recommend(request_data)
 
     return response_data
