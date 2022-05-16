@@ -136,7 +136,6 @@ def recommanded(products, avg_cart, cart):
 
     Return: 10 recommanded products with similarities
     """
-    results = []
     recommanded = {
         "cart" : cart,
         "similar_items" : []
@@ -145,19 +144,17 @@ def recommanded(products, avg_cart, cart):
     scores = calculate(multiple_item=products.avg.to_numpy(), single_item=avg_cart)
     
     # get top 10 similar products:
-    for i in range(10):
+    while len(recommanded['similar_items']) < 10:
         index = argmax(scores)
+        item_name = products.features[index]
         temp = {
-            "productName":products.features[index],
+            "productName": item_name,
             "similarity": scores[index]
         }
-        results.append(temp)
+        if item_name not in cart:
+            recommanded['similar_items'].append(temp)
+        else:
+            pass
         scores[index] = 0
-
-    # sort
-    results = sorted(results, key=lambda x: x["similarity"], reverse=True)
-    for item in results:
-        if item['productName'] not in cart:
-            recommanded['similar_items'].append(item)
 
     return recommanded
